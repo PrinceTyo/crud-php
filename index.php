@@ -28,8 +28,8 @@
 
     <h2>Data Siswa X PPLG</h2>
 
-    <a href="create.php">➕ Tambah Data</a>
-    <a href="index.php?sort=1">🔃 Urutkan Nilai</a>
+    <a href="create.php">Tambah Data</a>
+    <a href="index.php?sort=1">Urutkan Nilai</a>
 
     <br><br>
 
