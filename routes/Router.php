@@ -16,20 +16,43 @@ class Router
 
     public static function run(): void
     {
-        $path = '/';
-        if (isset($_SERVER['PATH_INFO'])) {
-            $path = $_SERVER['PATH_INFO'];
-        }
+        $path = $_SERVER['PATH_INFO'] ?? '/';
         $method = $_SERVER['REQUEST_METHOD'];
 
+        if ($method === 'POST' && isset($_POST['_method'])) {
+            $method = strtoupper($_POST['_method']);
+        }
+
         foreach (self::$routes as $route) {
-            if ($path == $route['path'] && $method == $route['method']) {
 
-                $function = $route['function'];
+            // potong URL & route jadi array
+            $pathParts = explode('/', trim($path, '/'));
+            $routeParts = explode('/', trim($route['path'], '/'));
+
+            // jumlah segmen harus sama
+            if (count($pathParts) !== count($routeParts)) {
+                continue;
+            }
+
+            $params = [];
+            $match = true;
+
+            foreach ($routeParts as $i => $part) {
+                if (preg_match('/^\{.+\}$/', $part)) {
+                    // ini parameter {student}
+                    $params[] = $pathParts[$i];
+                } elseif ($part !== $pathParts[$i]) {
+                    $match = false;
+                    break;
+                }
+            }
+
+            if ($match && $method === $route['method']) {
                 $controller = new $route['controller'];
-
-                $controller->$function();
-
+                call_user_func_array(
+                    [$controller, $route['function']],
+                    $params
+                );
                 return;
             }
         }
