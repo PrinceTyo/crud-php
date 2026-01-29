@@ -48,8 +48,7 @@
             <th>Aksi</th>
         </tr>
 
-        <?php foreach ($students as $nis => $student): ?>
-
+        <?php foreach ($students as $id => $student): ?>
 
             <tr class="<?= ($student['rata'] ?? 0) < 80 ? 'red' : '' ?>">
                 <td><?= $student['nis'] ?></td>
@@ -60,17 +59,18 @@
                 <td><?= $student['produktif'] ?? 0 ?></td>
                 <td><?= $student['rata'] ?? 0 ?></td>
                 <td>
-                    <a href="/students/<?= $nis ?>/edit">✏️ Edit</a>
+                    <a href="/students/<?= $id ?>/edit">✏️ Edit</a>
 
-                    <form action="/students/<?= $nis ?>" method="POST" style="display:inline">
-                        <input type="hidden" name="_method" value="DELETE">
+                    <form action="/students/<?= $id ?>/delete" method="POST" style="display:inline">
                         <button type="submit" onclick="return confirm('Hapus data?')">
                             🗑️ Hapus
                         </button>
                     </form>
                 </td>
             </tr>
+
         <?php endforeach; ?>
+
 
 
     </table>

@@ -8,6 +8,7 @@ class Student
     {
         Session::start();
         $_SESSION['students'] ??= [];
+        $_SESSION['auto_id'] ??= 1;
     }
 
     public static function all(): array
@@ -16,57 +17,98 @@ class Student
         return $_SESSION['students'];
     }
 
-    public static function find(string $nis): ?array
+    public static function find(string $id): ?array
     {
         self::init();
-        return $_SESSION['students'][$nis] ?? null;
+        return $_SESSION['students'][$id] ?? null;
     }
+
+    private static function validate(array $data, ?string $currentId = null): void
+    {
+        $errors = [];
+
+        // NIS
+        if (empty($data['nis'])) {
+            $errors['nis'] = 'NIS wajib diisi';
+        } elseif (!ctype_digit($data['nis'])) {
+            $errors['nis'] = 'NIS harus berupa angka';
+        } else {
+            foreach ($_SESSION['students'] as $id => $student) {
+                if ($student['nis'] === $data['nis'] && $id != $currentId) {
+                    $errors['nis'] = 'NIS sudah terdaftar';
+                    break;
+                }
+            }
+        }
+
+        // Nama
+        if (empty($data['nama'])) {
+            $errors['nama'] = 'Nama wajib diisi';
+        }
+
+        // Nilai 0–100
+        $scores = [
+            'matematika' => 'Matematika',
+            'bing' => 'Bahasa Inggris',
+            'bin' => 'Bahasa Indonesia',
+            'produktif' => 'Produktif'
+        ];
+
+        foreach ($scores as $field => $label) {
+            if (!isset($data[$field]) || $data[$field] === '') {
+                $errors[$field] = "$label wajib diisi";
+            } elseif ($data[$field] < 0 || $data[$field] > 100) {
+                $errors[$field] = "Nilai $label hanya 0–100";
+            }
+        }
+
+        if (!empty($errors)) {
+            throw new Exception(json_encode($errors));
+        }
+    }
+
+
 
     public static function create(array $data): void
     {
         self::init();
+        self::validate($data);
 
-        // validasi NIS unik
-        if (isset($_SESSION['students'][$data['nis']])) {
-            throw new Exception('NIS sudah terdaftar');
-        }
+        $id = $_SESSION['auto_id']++;
 
-        $_SESSION['students'][$data['nis']] = self::withAverage($data);
+        $data['id'] = $id;
+        $_SESSION['students'][$id] = self::withAverage($data);
     }
 
-    public static function update(string $oldNis, array $data): void
+
+    public static function update(string $id, array $data): void
     {
         self::init();
+
+        if (!isset($_SESSION['students'][$id])) {
+            throw new Exception('Data tidak ditemukan');
+        }
 
         unset($data['_method']);
 
-        $newNis = $data['nis'] ?? $oldNis;
+        self::validate($data, $id);
 
-        // jika NIS berubah
-        if ($newNis !== $oldNis) {
-
-            // cek NIS baru belum dipakai
-            if (isset($_SESSION['students'][$newNis])) {
-                throw new Exception('NIS sudah digunakan');
-            }
-
-            // hapus data lama
-            unset($_SESSION['students'][$oldNis]);
-        }
-
-        $_SESSION['students'][$newNis] = self::withAverage($data);
+        $data['id'] = $id;
+        $_SESSION['students'][$id] = self::withAverage($data);
     }
 
 
-
-    public static function delete(string $nis): void
+    public static function delete(string $id): void
     {
         self::init();
 
-        if (isset($_SESSION['students'][$nis])) {
-            unset($_SESSION['students'][$nis]);
+        if (!isset($_SESSION['students'][$id])) {
+            throw new Exception('Data tidak ditemukan');
         }
+
+        unset($_SESSION['students'][$id]);
     }
+
 
     private static function withAverage(array $data): array
     {

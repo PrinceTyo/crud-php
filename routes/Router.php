@@ -19,40 +19,28 @@ class Router
         $path = $_SERVER['PATH_INFO'] ?? '/';
         $method = $_SERVER['REQUEST_METHOD'];
 
-        if ($method === 'POST' && isset($_POST['_method'])) {
-            $method = strtoupper($_POST['_method']);
-        }
-
         foreach (self::$routes as $route) {
 
-            // potong URL & route jadi array
-            $pathParts = explode('/', trim($path, '/'));
-            $routeParts = explode('/', trim($route['path'], '/'));
-
-            // jumlah segmen harus sama
-            if (count($pathParts) !== count($routeParts)) {
+            if ($method !== $route['method']) {
                 continue;
             }
 
-            $params = [];
-            $match = true;
+            $pattern = preg_replace(
+                '#\{[^/]+\}#',
+                '([^/]+)',
+                $route['path']
+            );
 
-            foreach ($routeParts as $i => $part) {
-                if (preg_match('/^\{.+\}$/', $part)) {
-                    // ini parameter {student}
-                    $params[] = $pathParts[$i];
-                } elseif ($part !== $pathParts[$i]) {
-                    $match = false;
-                    break;
-                }
-            }
+            $pattern = "#^{$pattern}$#";
 
-            if ($match && $method === $route['method']) {
+            if (preg_match($pattern, $path, $matches)) {
+
+                array_shift($matches);
+
                 $controller = new $route['controller'];
-                call_user_func_array(
-                    [$controller, $route['function']],
-                    $params
-                );
+                $function = $route['function'];
+
+                $controller->$function(...$matches);
                 return;
             }
         }

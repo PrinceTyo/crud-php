@@ -20,15 +20,17 @@ class StudentController
         try {
             Student::create($_POST);
             header('Location: /students');
+            exit;
         } catch (Exception $e) {
-            echo $e->getMessage();
+            $errors = json_decode($e->getMessage(), true);
+            $old = $_POST;
+            require __DIR__ . '/../Views/students/create.php';
         }
-        exit;
     }
 
-    public function edit(string $nis): void
+    public function edit(string $id): void
     {
-        $student = Student::find($nis);
+        $student = Student::find($id);
 
         if (!$student) {
             http_response_code(404);
@@ -39,29 +41,28 @@ class StudentController
         require __DIR__ . '/../Views/students/edit.php';
     }
 
-    public function update(string $nis): void
+    public function update(string $id): void
     {
+        $student = Student::find($id);
+
+        if (!$student) {
+            die('Data tidak ditemukan');
+        }
+
         try {
-            Student::update($nis, $_POST);
+            Student::update($id, $_POST);
             header('Location: /students');
             exit;
         } catch (Exception $e) {
-
-            $student = array_merge(
-                Student::find($nis),
-                $_POST
-            );
-
-            $error = $e->getMessage();
+            $errors = json_decode($e->getMessage(), true);
+            $student = array_merge($student, $_POST);
             require __DIR__ . '/../Views/students/edit.php';
         }
     }
 
-
-
-    public function destroy(string $nis): void
+    public function destroy(string $id): void
     {
-        Student::delete($nis);
+        Student::delete($id);
         header('Location: /students');
         exit;
     }
