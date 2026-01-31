@@ -44,7 +44,13 @@ class Student
         // Nama
         if (empty($data['nama'])) {
             $errors['nama'] = 'Nama wajib diisi';
+        } else if (!preg_match('/^[a-zA-Z\s]+$/', $data['nama'])) {
+            $errors['nama'] = 'Nama hanya boleh huruf dan spasi';
         }
+        // if (!preg_match('/[a-zA-Z]/', $data['nama'])) {
+        //     $errors['nama'] = 'Nama harus mengandung huruf';
+        // }
+
 
         // Nilai 0–100
         $scores = [
@@ -126,7 +132,6 @@ class Student
         ) / 4;
 
         $data['rata'] = $avg;
-        $data['status'] = $avg < 80 ? 'TIDAK LULUS' : 'LULUS';
 
         return $data;
     }
