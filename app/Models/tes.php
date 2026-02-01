@@ -27,11 +27,10 @@ class Student
     {
         $errors = [];
 
-        // NIS
         if (empty($data['nis'])) {
             $errors['nis'] = 'NIS wajib diisi';
         } else if (!ctype_digit($data['nis'])) {
-            $errors['nis'] = 'NIS harus berupa angka';
+            $errors['nis'] = 'NIS wajib berupa angka';
         } else {
             foreach ($_SESSION['students'] as $id => $student) {
                 if ($student['nis'] === $data['nis'] && $id != $currentId) {
@@ -41,27 +40,24 @@ class Student
             }
         }
 
-        // Nama
         if (empty($data['nama'])) {
             $errors['nama'] = 'Nama wajib diisi';
         } else if (!preg_match('/[a-zA-Z]/', $data['nama'])) {
             $errors['nama'] = 'Nama harus mengandung huruf';
         }
 
-
-        // Nilai 0–100
         $scores = [
             'matematika' => 'Matematika',
             'bing' => 'Bahasa Inggris',
             'bin' => 'Bahasa Indonesia',
-            'produktif' => 'Produktif'
+            'produktif' => 'Produktif',
         ];
 
-        foreach ($scores as $field => $label) {
+        foreach ($scores as $field) {
             if (!isset($data[$field]) || $data[$field] === '') {
-                $errors[$field] = "$label wajib diisi";
+                $errors[$field] = "Nilai wajib diisi";
             } else if ($data[$field] < 0 || $data[$field] > 100) {
-                $errors[$field] = "Nilai $label hanya 0–100";
+                $errors[$field] = "Rentang nilai hanya 0-100";
             }
         }
 
@@ -78,7 +74,7 @@ class Student
         $id = $_SESSION['auto_id']++;
 
         $data['id'] = $id;
-        $_SESSION['students'][$id] = self::withAverage($data);
+        $_SESSION['students'][$id] = self::withAvarage($data);
     }
 
     public static function update(string $id, array $data): void
@@ -89,14 +85,13 @@ class Student
             throw new Exception('Data tidak ditemukan');
         }
 
-        unset($data['_method']);
+        unset($_SESSION['students'][$id]);
 
         self::validate($data, $id);
 
         $data['id'] = $id;
-        $_SESSION['students'][$id] = self::withAverage($data);
+        $_SESSION['students'][$id] = self::withAvarage($data);
     }
-
 
     public static function delete(string $id): void
     {
@@ -109,8 +104,7 @@ class Student
         unset($_SESSION['students'][$id]);
     }
 
-
-    private static function withAverage(array $data): array
+    private static function withAvarage(array $data): array
     {
         $fields = ['matematika', 'bing', 'bin', 'produktif'];
 

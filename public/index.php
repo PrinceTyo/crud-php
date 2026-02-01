@@ -10,8 +10,4 @@ Router::add('GET', '/students/{id}/edit', StudentController::class, 'edit');
 Router::add('POST', '/students/{id}/update', StudentController::class, 'update');
 Router::add('POST', '/students/{id}/delete', StudentController::class, 'destroy');
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
-//     $_SERVER['REQUEST_METHOD'] = strtoupper($_POST['_method']);
-// }
-
 Router::run();
