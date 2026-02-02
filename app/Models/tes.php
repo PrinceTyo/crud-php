@@ -8,13 +8,12 @@ class Student
     {
         Session::start();
         $_SESSION['students'] ??= [];
-        $_SESSION['auto_id'] ??= 1;
     }
 
     public static function all(): array
     {
         self::init();
-        return $_SESSION['students'];
+        return $_SESSION['students'] ??= [];
     }
 
     public static function find(string $id): ?array
@@ -28,42 +27,56 @@ class Student
         $errors = [];
 
         if (empty($data['nis'])) {
-            $errors['nis'] = 'NIS wajib diisi';
+            $errors['nis'] = "NIS wajib diisi";
         } else if (!ctype_digit($data['nis'])) {
-            $errors['nis'] = 'NIS wajib berupa angka';
+            $errors['nis'] = "NIS wajib menggunakan angka";
         } else {
             foreach ($_SESSION['students'] as $id => $student) {
                 if ($student['nis'] === $data['nis'] && $id != $currentId) {
-                    $errors['nis'] = 'NIS sudah terdaftar';
+                    $errors['nis'] = "NIS Sudah terdaftar";
                     break;
                 }
             }
         }
 
         if (empty($data['nama'])) {
-            $errors['nama'] = 'Nama wajib diisi';
+            $errors['nama'] = "Nama wajib diisi";
         } else if (!preg_match('/[a-zA-Z]/', $data['nama'])) {
-            $errors['nama'] = 'Nama harus mengandung huruf';
+            $errors['nama'] = "Nama harus mengandung huruf";
         }
 
-        $scores = [
+        $mapels = [
             'matematika' => 'Matematika',
             'bing' => 'Bahasa Inggris',
             'bin' => 'Bahasa Indonesia',
-            'produktif' => 'Produktif',
+            'produktif' => 'Produktif'
         ];
 
-        foreach ($scores as $field) {
-            if (!isset($data[$field]) || $data[$field] === '') {
-                $errors[$field] = "Nilai wajib diisi";
-            } else if ($data[$field] < 0 || $data[$field] > 100) {
-                $errors[$field] = "Rentang nilai hanya 0-100";
+        foreach ($mapels as $mapel) {
+            if (!isset($data[$mapel]) || $data[$mapel] === '') {
+                $errors[$mapel] = "Wajib diisi";
+            } else if ($data[$mapel] < 0 || $data[$mapel] > 100) {
+                $errors[$mapel] = "Rentang nlai hanya 0-100";
             }
         }
 
         if (!empty($errors)) {
             throw new Exception(json_encode($errors));
         }
+    }
+
+    private static function withAvarage(array $data): array
+    {
+        $mapels = ['matematika', 'bing', 'bin', 'produktif'];
+
+        foreach ($mapels as $mapel) {
+            $data[$mapel] = (int) ($data[$mapel] ?? 0);
+        }
+
+        $avg = ($data['matematika'] + $data['bing'] + $data['bin'] + $data['produktif']) / 4;
+
+        $data['rata'] = $avg;
+        return $data;
     }
 
     public static function create(array $data): void
@@ -82,7 +95,7 @@ class Student
         self::init();
 
         if (!isset($_SESSION['students'][$id])) {
-            throw new Exception('Data tidak ditemukan');
+            throw new Exception("Data tidak ditemukan");
         }
 
         unset($_SESSION['students'][$id]);
@@ -91,36 +104,5 @@ class Student
 
         $data['id'] = $id;
         $_SESSION['students'][$id] = self::withAvarage($data);
-    }
-
-    public static function delete(string $id): void
-    {
-        self::init();
-
-        if (!isset($_SESSION['students'][$id])) {
-            throw new Exception('Data tidak ditemukan');
-        }
-
-        unset($_SESSION['students'][$id]);
-    }
-
-    private static function withAvarage(array $data): array
-    {
-        $fields = ['matematika', 'bing', 'bin', 'produktif'];
-
-        foreach ($fields as $field) {
-            $data[$field] = (int) ($data[$field] ?? 0);
-        }
-
-        $avg = (
-            $data['matematika'] +
-            $data['bing'] +
-            $data['bin'] +
-            $data['produktif']
-        ) / 4;
-
-        $data['rata'] = $avg;
-
-        return $data;
     }
 }

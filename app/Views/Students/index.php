@@ -4,77 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <title>Data Siswa</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: center;
-        }
-
-        tr.red {
-            background-color: #f8d7da;
-        }
-
-        a,
-        button {
-            padding: 6px 10px;
-            text-decoration: none;
-            margin: 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
+    <section>
+        <div class="div-first">
+            <div class="div-second">
+                <div class="div-third">
+                    <div class="div-button">
+                        <h1 class="text-button">Your Student</h1>
+                        <a href="/students/create">
+                            <button type="submit" class="btn">
+                                Add
+                            </button>
+                        </a>
+                    </div>
 
-    <h2>Data Siswa</h2>
+                    <div class="div-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>NIS</th>
+                                    <th>Nama</th>
+                                    <th>Matematika</th>
+                                    <th>B.Ing</th>
+                                    <th>B.Ind</th>
+                                    <th>Produktif</th>
+                                    <th>Rata-rata</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
 
-    <a href="/students/create">➕ Tambah Siswa</a>
+                            <?php foreach ($students as $id => $student): ?>
 
-    <table>
-        <tr>
-            <th>NIS</th>
-            <th>Nama</th>
-            <th>Matematika</th>
-            <th>B.Ing</th>
-            <th>B.Ind</th>
-            <th>Produktif</th>
-            <th>Rata-rata</th>
-            <th>Aksi</th>
-        </tr>
+                                <tr class="<?= ($student['rata'] ?? 0) < 80 ? 'red' : '' ?>">
+                                    <td><?= $student['nis'] ?></td>
+                                    <td><?= $student['nama'] ?? '-' ?></td>
+                                    <td><?= $student['matematika'] ?? 0 ?></td>
+                                    <td><?= $student['bing'] ?? 0 ?></td>
+                                    <td><?= $student['bin'] ?? 0 ?></td>
+                                    <td><?= $student['produktif'] ?? 0 ?></td>
+                                    <td><?= $student['rata'] ?? 0 ?></td>
+                                    <td>
+                                        <a href="/students/<?= $id ?>/edit">✏️ Edit</a>
 
-        <?php foreach ($students as $id => $student): ?>
+                                        <form action="/students/<?= $id ?>/delete" method="POST" style="display:inline">
+                                            <button type="submit" onclick="return confirm('Hapus data?')">
+                                                🗑️ Hapus
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
 
-            <tr class="<?= ($student['rata'] ?? 0) < 80 ? 'red' : '' ?>">
-                <td><?= $student['nis'] ?></td>
-                <td><?= $student['nama'] ?? '-' ?></td>
-                <td><?= $student['matematika'] ?? 0 ?></td>
-                <td><?= $student['bing'] ?? 0 ?></td>
-                <td><?= $student['bin'] ?? 0 ?></td>
-                <td><?= $student['produktif'] ?? 0 ?></td>
-                <td><?= $student['rata'] ?? 0 ?></td>
-                <td>
-                    <a href="/students/<?= $id ?>/edit">✏️ Edit</a>
+                            <?php endforeach; ?>
 
-                    <form action="/students/<?= $id ?>/delete" method="POST" style="display:inline">
-                        <button type="submit" onclick="return confirm('Hapus data?')">
-                            🗑️ Hapus
-                        </button>
-                    </form>
-                </td>
-            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <?php endforeach; ?>
-
-
-
-    </table>
-
+    </section>
 </body>
 
 </html>

@@ -70,6 +70,26 @@ class Student
         }
     }
 
+    private static function withAverage(array $data): array
+    {
+        $fields = ['matematika', 'bing', 'bin', 'produktif'];
+
+        foreach ($fields as $field) {
+            $data[$field] = (int) ($data[$field] ?? 0);
+        }
+
+        $avg = (
+            $data['matematika'] +
+            $data['bing'] +
+            $data['bin'] +
+            $data['produktif']
+        ) / 4;
+
+        $data['rata'] = $avg;
+
+        return $data;
+    }
+
     public static function create(array $data): void
     {
         self::init();
@@ -107,26 +127,5 @@ class Student
         }
 
         unset($_SESSION['students'][$id]);
-    }
-
-
-    private static function withAverage(array $data): array
-    {
-        $fields = ['matematika', 'bing', 'bin', 'produktif'];
-
-        foreach ($fields as $field) {
-            $data[$field] = (int) ($data[$field] ?? 0);
-        }
-
-        $avg = (
-            $data['matematika'] +
-            $data['bing'] +
-            $data['bin'] +
-            $data['produktif']
-        ) / 4;
-
-        $data['rata'] = $avg;
-
-        return $data;
     }
 }
