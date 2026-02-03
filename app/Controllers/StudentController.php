@@ -18,7 +18,7 @@ class StudentController
     public function store(): void
     {
         try {
-            Student::create($_POST);
+            Student::store($_POST);
             header('Location: /students');
             exit;
         } catch (Exception $e) {

@@ -47,11 +47,11 @@
                                     <td><?= $student['produktif'] ?? 0 ?></td>
                                     <td><?= $student['rata'] ?? 0 ?></td>
                                     <td>
-                                        <a href="/students/<?= $id ?>/edit">✏️ Edit</a>
+                                        <a href="/students/<?= $id ?>/edit">Edit</a>
 
                                         <form action="/students/<?= $id ?>/delete" method="POST" style="display:inline">
                                             <button type="submit" onclick="return confirm('Hapus data?')">
-                                                🗑️ Hapus
+                                                Hapus
                                             </button>
                                         </form>
                                     </td>

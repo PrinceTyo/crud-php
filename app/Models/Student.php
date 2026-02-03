@@ -90,7 +90,7 @@ class Student
         return $data;
     }
 
-    public static function create(array $data): void
+    public static function store(array $data): void
     {
         self::init();
         self::validate($data);

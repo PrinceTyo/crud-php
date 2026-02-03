@@ -8,12 +8,13 @@ class Student
     {
         Session::start();
         $_SESSION['students'] ??= [];
+        $_SESSION['auto_id'] ??= 1;
     }
 
     public static function all(): array
     {
         self::init();
-        return $_SESSION['students'] ??= [];
+        return $_SESSION['students'];
     }
 
     public static function find(string $id): ?array
@@ -29,12 +30,11 @@ class Student
         if (empty($data['nis'])) {
             $errors['nis'] = "NIS wajib diisi";
         } else if (!ctype_digit($data['nis'])) {
-            $errors['nis'] = "NIS wajib menggunakan angka";
+            $errors['nis'] = "NIS harus berupa angka";
         } else {
             foreach ($_SESSION['students'] as $id => $student) {
                 if ($student['nis'] === $data['nis'] && $id != $currentId) {
-                    $errors['nis'] = "NIS Sudah terdaftar";
-                    break;
+                    $errors['nis'] = "NIS sudah terdaftar";
                 }
             }
         }
@@ -56,7 +56,7 @@ class Student
             if (!isset($data[$mapel]) || $data[$mapel] === '') {
                 $errors[$mapel] = "Wajib diisi";
             } else if ($data[$mapel] < 0 || $data[$mapel] > 100) {
-                $errors[$mapel] = "Rentang nlai hanya 0-100";
+                $errors[$mapel] = "Rentang nilai hanya 0-100";
             }
         }
 
@@ -70,12 +70,12 @@ class Student
         $mapels = ['matematika', 'bing', 'bin', 'produktif'];
 
         foreach ($mapels as $mapel) {
-            $data[$mapel] = (int) ($data[$mapel] ?? 0);
+            $data[$mapel] = (int) ($data[$mapel]);
         }
 
         $avg = ($data['matematika'] + $data['bing'] + $data['bin'] + $data['produktif']) / 4;
 
-        $data['rata'] = $avg;
+        $data['rerata'] = $avg;
         return $data;
     }
 
@@ -101,8 +101,19 @@ class Student
         unset($_SESSION['students'][$id]);
 
         self::validate($data, $id);
-
         $data['id'] = $id;
+
         $_SESSION['students'][$id] = self::withAvarage($data);
+    }
+
+    public static function delete(string $id): void
+    {
+        self::init();
+
+        if (!isset($_SESSION['students'][$id])) {
+            throw new Exception("Data tidak ditemukan");
+        }
+
+        unset($_SESSION['students'][$id]);
     }
 }
