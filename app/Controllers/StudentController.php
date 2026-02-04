@@ -19,6 +19,7 @@ class StudentController
     {
         try {
             Student::store($_POST);
+            $_SESSION['success'] = 'Berhasil Create Data Siswa';
             header('Location: /students');
             exit;
         } catch (Exception $e) {
@@ -51,6 +52,7 @@ class StudentController
 
         try {
             Student::update($id, $_POST);
+            $_SESSION['success'] = 'Berhasil Update Data Siswa';
             header('Location: /students');
             exit;
         } catch (Exception $e) {
@@ -63,6 +65,7 @@ class StudentController
     public function destroy(string $id): void
     {
         Student::delete($id);
+        $_SESSION['success'] = 'Berhasil Delete Data Siswa';
         header('Location: /students');
         exit;
     }

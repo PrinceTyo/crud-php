@@ -1,119 +1,43 @@
 <?php
 
-require_once __DIR__ . '/../Core/Session.php';
+require_once __DIR__ . '/../Models/Student.php';
 
-class Student
+class StudentController
 {
-    private static function init(): void
+    public function index(): void
     {
-        Session::start();
-        $_SESSION['students'] ??= [];
-        $_SESSION['auto_id'] ??= 1;
+        $students = Student::all();
+        require __DIR__ . '/../Views/Students/index.php';
     }
 
-    public static function all(): array
+    public function create(): void
     {
-        self::init();
-        return $_SESSION['students'];
+        require __DIR__ . '/../Views/Students/create.php';
     }
 
-    public static function find(string $id): ?array
+    public function store(): void
     {
-        self::init();
-        return $_SESSION['students'][$id] ?? null;
-    }
-
-    private static function validate(array $data, ?string $currentId = null): void
-    {
-        $errors = [];
-
-        if (empty($data['nis'])) {
-            $errors['nis'] = "NIS wajib diisi";
-        } else if (!ctype_digit($data['nis'])) {
-            $errors['nis'] = "NIS harus berupa angka";
-        } else {
-            foreach ($_SESSION['students'] as $id => $student) {
-                if ($student['nis'] === $data['nis'] && $id != $currentId) {
-                    $errors['nis'] = "NIS sudah terdaftar";
-                }
-            }
-        }
-
-        if (empty($data['nama'])) {
-            $errors['nama'] = "Nama wajib diisi";
-        } else if (!preg_match('/[a-zA-Z]/', $data['nama'])) {
-            $errors['nama'] = "Nama harus mengandung huruf";
-        }
-
-        $mapels = [
-            'matematika' => 'Matematika',
-            'bing' => 'Bahasa Inggris',
-            'bin' => 'Bahasa Indonesia',
-            'produktif' => 'Produktif'
-        ];
-
-        foreach ($mapels as $mapel) {
-            if (!isset($data[$mapel]) || $data[$mapel] === '') {
-                $errors[$mapel] = "Wajib diisi";
-            } else if ($data[$mapel] < 0 || $data[$mapel] > 100) {
-                $errors[$mapel] = "Rentang nilai hanya 0-100";
-            }
-        }
-
-        if (!empty($errors)) {
-            throw new Exception(json_encode($errors));
+        try {
+            Student::store($_POST);
+            header('location: /students');
+            exit;
+        } catch (Exception $e) {
+            $errors = json_decode($e->getMessage(), true);
+            $old = $_POST;
+            require __DIR__ . '/../Views/Students/create.php';
         }
     }
 
-    private static function withAvarage(array $data): array
+    public function edit(string $id): void
     {
-        $mapels = ['matematika', 'bing', 'bin', 'produktif'];
+        $student = Student::find($id);
 
-        foreach ($mapels as $mapel) {
-            $data[$mapel] = (int) ($data[$mapel]);
+        if (!$student) {
+            http_response_code(404);
+            echo "Data Tidak Ditemukan";
+            return;
         }
 
-        $avg = ($data['matematika'] + $data['bing'] + $data['bin'] + $data['produktif']) / 4;
-
-        $data['rerata'] = $avg;
-        return $data;
-    }
-
-    public static function create(array $data): void
-    {
-        self::init();
-        self::validate($data);
-
-        $id = $_SESSION['auto_id']++;
-
-        $data['id'] = $id;
-        $_SESSION['students'][$id] = self::withAvarage($data);
-    }
-
-    public static function update(string $id, array $data): void
-    {
-        self::init();
-
-        if (!isset($_SESSION['students'][$id])) {
-            throw new Exception("Data tidak ditemukan");
-        }
-
-        unset($_SESSION['students'][$id]);
-
-        self::validate($data, $id);
-        $data['id'] = $id;
-
-        $_SESSION['students'][$id] = self::withAvarage($data);
-    }
-
-    public static function delete(string $id): void
-    {
-        self::init();
-
-        if (!isset($_SESSION['students'][$id])) {
-            throw new Exception("Data tidak ditemukan");
-        }
-
-        unset($_SESSION['students'][$id]);
+        require __DIR__ . '/../Views/Students/edit.php';
     }
 }
