@@ -1,120 +1,89 @@
-<!DOCTYPE html>
-<html lang="id">
+<?php ob_start(); ?>
+<div class="form-container">
+    <div>
+        <form action="/students/<?= $student['id'] ?>/update" method="POST" class="form-card">
+            <h2 class="page-title">Edit Data Siswa</h2>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Siswa</title>
+            <div class="div-top">
+                <div class="form-group">
+                    <label>NIS</label>
+                    <input type="text" name="nis"
+                        value="<?= $student['nis'] ?? '' ?>"
+                        class="<?= isset($errors['nis']) ? 'input-error' : '' ?>">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+                    <?php if (isset($errors['nis'])): ?>
+                        <div class="error-text"><?= $errors['nis'] ?></div>
+                    <?php endif; ?>
+                </div>
 
-        .input-error {
-            border: 1px solid red;
-        }
+                <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" name="nama"
+                        value="<?= $student['nama'] ?? '' ?>"
+                        class="<?= isset($errors['nama']) ? 'input-error' : '' ?>">
 
-        .error-text {
-            color: red;
-            font-size: 13px;
-            margin-top: 4px;
-        }
+                    <?php if (isset($errors['nama'])): ?>
+                        <div class="error-text"><?= $errors['nama'] ?></div>
+                    <?php endif; ?>
+                </div>
+            </div>
 
-        label {
-            font-weight: bold;
-        }
-    </style>
-</head>
+            <div class="div-bottom">
+                <div class="form-group">
+                    <label>Matematika</label>
+                    <input type="number" name="matematika"
+                        value="<?= $student['matematika'] ?? '' ?>"
+                        class="<?= isset($errors['matematika']) ? 'input-error' : '' ?>">
 
-<body>
+                    <?php if (isset($errors['matematika'])): ?>
+                        <div class="error-text"><?= $errors['matematika'] ?></div>
+                    <?php endif; ?>
+                </div>
 
-    <h2>Edit Data Siswa</h2>
+                <div class="form-group">
+                    <label>Bahasa Inggris</label>
+                    <input type="number" name="bing"
+                        value="<?= $student['bing'] ?? '' ?>"
+                        class="<?= isset($errors['bing']) ? 'input-error' : '' ?>">
 
-    <form action="/students/<?= $student['id'] ?>/update" method="POST">
+                    <?php if (isset($errors['bing'])): ?>
+                        <div class="error-text"><?= $errors['bing'] ?></div>
+                    <?php endif; ?>
+                </div>
 
-        <!-- NIS -->
-        <label>NIS</label><br>
-        <input type="text"
-            name="nis"
-            value="<?= $student['nis'] ?? '' ?>"
-            class="<?= isset($errors['nis']) ? 'input-error' : '' ?>"
-            required>
+                <div class="form-group">
+                    <label>Bahasa Indonesia</label>
+                    <input type="number" name="bin"
+                        value="<?= $student['bin'] ?? '' ?>"
+                        class="<?= isset($errors['bin']) ? 'input-error' : '' ?>">
 
-        <?php if (isset($errors['nis'])): ?>
-            <div class="error-text"><?= $errors['nis'] ?></div>
-        <?php endif; ?>
-        <br><br>
+                    <?php if (isset($errors['bin'])): ?>
+                        <div class="error-text"><?= $errors['bin'] ?></div>
+                    <?php endif; ?>
+                </div>
 
-        <!-- Nama -->
-        <label>Nama</label><br>
-        <input type="text"
-            name="nama"
-            value="<?= $student['nama'] ?? '' ?>"
-            class="<?= isset($errors['nama']) ? 'input-error' : '' ?>"
-            required>
+                <div class="form-group">
+                    <label>Produktif</label>
+                    <input type="number" name="produktif"
+                        value="<?= $student['produktif'] ?? '' ?>"
+                        class="<?= isset($errors['produktif']) ? 'input-error' : '' ?>">
 
-        <?php if (isset($errors['nama'])): ?>
-            <div class="error-text"><?= $errors['nama'] ?></div>
-        <?php endif; ?>
-        <br><br>
+                    <?php if (isset($errors['produktif'])): ?>
+                        <div class="error-text"><?= $errors['produktif'] ?></div>
+                    <?php endif; ?>
+                </div>
+            </div>
 
-        <!-- Matematika -->
-        <label>Matematika</label><br>
-        <input type="number"
-            name="matematika"
-            value="<?= $student['matematika'] ?? '' ?>"
-            class="<?= isset($errors['matematika']) ? 'input-error' : '' ?>"
-            required>
+            <div class="form-actions">
+                <button class="btn-primary">Update</button>
+                <a href="/students" class="btn-secondary">Kembali</a>
+            </div>
 
-        <?php if (isset($errors['matematika'])): ?>
-            <div class="error-text"><?= $errors['matematika'] ?></div>
-        <?php endif; ?>
-        <br><br>
+        </form>
 
-        <!-- Bahasa Inggris -->
-        <label>Bahasa Inggris</label><br>
-        <input type="number"
-            name="bing"
-            value="<?= $student['bing'] ?? '' ?>"
-            class="<?= isset($errors['bing']) ? 'input-error' : '' ?>"
-            required>
-
-        <?php if (isset($errors['bing'])): ?>
-            <div class="error-text"><?= $errors['bing'] ?></div>
-        <?php endif; ?>
-        <br><br>
-
-        <!-- Bahasa Indonesia -->
-        <label>Bahasa Indonesia</label><br>
-        <input type="number"
-            name="bin"
-            value="<?= $student['bin'] ?? '' ?>"
-            class="<?= isset($errors['bin']) ? 'input-error' : '' ?>"
-            required>
-
-        <?php if (isset($errors['bin'])): ?>
-            <div class="error-text"><?= $errors['bin'] ?></div>
-        <?php endif; ?>
-        <br><br>
-
-        <!-- Produktif -->
-        <label>Produktif</label><br>
-        <input type="number"
-            name="produktif"
-            value="<?= $student['produktif'] ?? '' ?>"
-            class="<?= isset($errors['produktif']) ? 'input-error' : '' ?>"
-            required>
-
-        <?php if (isset($errors['produktif'])): ?>
-            <div class="error-text"><?= $errors['produktif'] ?></div>
-        <?php endif; ?>
-        <br><br>
-
-        <button type="submit">Update</button>
-        <a href="/students">Batal</a>
-
-    </form>
-
-</body>
-
-</html>
+    </div>
+</div>
+<?php
+$content = ob_get_clean();
+$title = "Edit Data";
+require __DIR__ . '/../layouts/app.php';

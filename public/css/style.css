@@ -53,12 +53,17 @@ section {
 }
 
 .btn:hover {
-  background-color: #60a5fa;
+  background-color: #34495e;
   color: #fff;
 }
 
 .div-table {
   overflow-x: auto;
+}
+
+.red {
+  color: red;
+  font-weight: bold;
 }
 
 table {
@@ -71,7 +76,19 @@ table {
 }
 
 thead tr {
-  background-color: #f3f4f6;
+  background-color: #34495e;
+}
+
+thead tr th {
+  color: #ffffff;
+}
+
+tfoot tr {
+  background-color: #34495e;
+}
+
+tfoot tr td {
+  color: #ffffff;
 }
 
 th {
@@ -88,10 +105,6 @@ td {
   font-size: 0.875rem;
   color: #374151;
   border-bottom: 1px solid #e5e7eb;
-}
-
-tbody tr:hover {
-  background-color: #f9fafb;
 }
 
 tr.red {
@@ -119,6 +132,12 @@ td form button:hover {
   text-decoration: underline;
 }
 
+.heading-rata {
+  text-align: center;
+}
+
+/* ALERT */
+
 .alert-success {
   display: flex;
   align-items: center;
@@ -145,7 +164,6 @@ td form button:hover {
 .alert-close {
   background: transparent;
   border: none;
-  font-size: 16px;
   cursor: pointer;
   color: #059669;
 }
@@ -158,77 +176,144 @@ td form button:hover {
   display: none;
 }
 
+/* FILTER & SEARCH */
+
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  min-width: 180px;
+  outline: none;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: #34495e;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-filter {
+  background: #34495e;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-filter:hover {
+  opacity: 0.9;
+}
+
+.btn-reset {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  color: #444;
+}
+
+.btn-reset:hover {
+  background: #f3f4f6;
+}
+
+/* INPUT */
+
+.form-container {
+  /* background-color: #065f46; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
 .page-title {
   margin-bottom: 20px;
 }
 
 .form-card {
-  background: white;
-  padding: 25px;
-  max-width: 600px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  background-color: #e6e6e6;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px #b4b4b4;
+}
+
+.div-top {
+  display: flex;
+  gap: 10px;
+}
+
+.div-bottom {
+  display: flex;
+  gap: 10px;
 }
 
 .form-group {
-  margin-bottom: 16px;
-}
-
-label {
-  font-weight: 600;
+  margin-top: 16px;
   display: block;
-  margin-bottom: 6px;
 }
 
-input {
+.form-group input {
+  display: block;
+  padding: 8px;
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-input:focus {
+  margin-top: 4px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px #ddd;
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
-.input-error {
-  border-color: red;
+.form-actions {
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  padding: 20px 0 20px;
+}
+
+.btn-primary {
+  color: white;
+  background-color: #34495e;
+  width: 100%;
+  padding: 10px 0 10px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px #ddd;
+}
+
+.btn-secondary {
+  color: black;
+  text-decoration: none;
+  background-color: white;
+  width: 100%;
+  padding: 10px 0 10px 0;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px #ddd;
+  border: 1px solid #ddd;
 }
 
 .error-text {
   color: red;
-  font-size: 12px;
-  margin-top: 4px;
+  font-size: small;
 }
 
-.grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
-
-.form-actions {
-  margin-top: 20px;
-}
-
-.btn-primary {
-  background: #2563eb;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background: #1e4ed8;
-}
-
-.btn-secondary {
-  margin-left: 10px;
-  text-decoration: none;
-  color: #555;
+.input-error {
+  border: 1px solid red !important;
 }

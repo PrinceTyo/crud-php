@@ -4,16 +4,48 @@
     <div class="div-first">
         <div class="div-second">
             <div class="div-third">
+
                 <?php require __DIR__ . '/../components/alert.php'; ?>
 
                 <div class="div-button">
                     <h1 class="text-button">Your Student</h1>
                     <a href="/students/create">
                         <button type="submit" class="btn">
-                            Add
+                            <i class="fa-solid fa-plus"></i> Add
                         </button>
                     </a>
                 </div>
+
+                <form method="GET" class="filter-bar">
+
+                    <div class="filter-group">
+                        <input type="text"
+                            name="nis"
+                            placeholder="Cari NIS..."
+                            value="<?= $_GET['nis'] ?? '' ?>">
+                    </div>
+
+                    <div class="filter-group">
+                        <select name="sort">
+                            <option value="">Urutkan NIS</option>
+                            <option value="asc" <?= ($_GET['sort'] ?? '') == 'asc' ? 'selected' : '' ?>>Terkecil</option>
+                            <option value="desc" <?= ($_GET['sort'] ?? '') == 'desc' ? 'selected' : '' ?>>Terbesar</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button class="btn-filter">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Filter
+                        </button>
+
+                        <a href="/students" class="btn-reset">
+                            Reset
+                        </a>
+                    </div>
+
+                </form>
+
 
                 <div class="div-table">
                     <table>
@@ -30,38 +62,97 @@
                             </tr>
                         </thead>
 
-                        <?php foreach ($students as $id => $student): ?>
+                        <?php if (empty($students)): ?>
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" style="text-align:center; padding:20px; color:gray;">
+                                        Tidak ada data
+                                    </td>
+                                </tr>
+                            </tbody>
 
-                            <tr class="<?= ($student['rata'] ?? 0) < 80 ? 'red' : '' ?>">
-                                <td><?= $student['nis'] ?></td>
-                                <td><?= $student['nama'] ?? '-' ?></td>
-                                <td><?= $student['matematika'] ?? 0 ?></td>
-                                <td><?= $student['bing'] ?? 0 ?></td>
-                                <td><?= $student['bin'] ?? 0 ?></td>
-                                <td><?= $student['produktif'] ?? 0 ?></td>
-                                <td><?= $student['rata'] ?? 0 ?></td>
+                        <?php else: ?>
+
+                            <?php foreach ($students as $id => $student): ?>
+                                <tbody>
+                                    <tr class="<?= ($student['rata'] ?? 0) < 80 ? 'red' : '' ?>">
+                                        <td><?= $student['nis'] ?></td>
+                                        <td><?= $student['nama'] ?? '-' ?></td>
+
+                                        <td class="<?= ($student['matematika'] ?? 0) < 80 ? 'red' : '' ?>">
+                                            <?= $student['matematika'] ?? 0 ?>
+                                        </td>
+
+                                        <td class="<?= ($student['bing'] ?? 0) < 80 ? 'red' : '' ?>">
+                                            <?= $student['bing'] ?? 0 ?>
+                                        </td>
+
+                                        <td class="<?= ($student['bin'] ?? 0) < 80 ? 'red' : '' ?>">
+                                            <?= $student['bin'] ?? 0 ?>
+                                        </td>
+
+                                        <td class="<?= ($student['produktif'] ?? 0) < 80 ? 'red' : '' ?>">
+                                            <?= $student['produktif'] ?? 0 ?>
+                                        </td>
+
+                                        <td class="<?= ($student['rata'] ?? 0) < 80 ? 'red' : '' ?>">
+                                            <?= $student['rata'] ?? 0 ?>
+                                        </td>
+
+                                        <td>
+                                            <a href="/students/<?= $id ?>/edit">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+
+                                            <form action="/students/<?= $id ?>/delete" method="POST" style="display:inline">
+                                                <button type="submit" onclick="return confirm('Hapus data?')">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            <?php endforeach; ?>
+
+                        <?php endif; ?>
+
+                        <tfoot>
+                            <tr class="avg-row">
+                                <td class="heading-rata" colspan="2">Rata-rata per Mapel</td>
+
                                 <td>
-                                    <a href="/students/<?= $id ?>/edit">Edit</a>
-
-                                    <form action="/students/<?= $id ?>/delete" method="POST" style="display:inline">
-                                        <button type="submit" onclick="return confirm('Hapus data?')">
-                                            Hapus
-                                        </button>
-                                    </form>
+                                    <?= $avgMapel['matematika'] ?>
                                 </td>
-                            </tr>
 
-                        <?php endforeach; ?>
+                                <td>
+                                    <?= $avgMapel['bing'] ?>
+                                </td>
+
+                                <td>
+                                    <?= $avgMapel['bin'] ?>
+                                </td>
+
+                                <td>
+                                    <?= $avgMapel['produktif'] ?>
+                                </td>
+
+                                <td>
+                                    <?= $avgMapel['final'] ?>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
 
                     </table>
                 </div>
+
             </div>
         </div>
     </div>
-
 </section>
+
 <?php
 $content = ob_get_clean();
 $title = "Data Siswa";
-
 require __DIR__ . '/../layouts/app.php';

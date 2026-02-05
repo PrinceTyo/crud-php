@@ -17,6 +17,55 @@ class Student
         return $_SESSION['students'];
     }
 
+    public static function averagePerSubject(): array
+    {
+        self::init();
+
+        $students = $_SESSION['students'];
+
+        if (empty($students)) {
+            return [
+                'matematika' => 0,
+                'bing' => 0,
+                'bin' => 0,
+                'produktif' => 0,
+                'final' => 0
+            ];
+        }
+
+        $total = [
+            'matematika' => 0,
+            'bing' => 0,
+            'bin' => 0,
+            'produktif' => 0
+        ];
+
+        foreach ($students as $student) {
+            $total['matematika'] += $student['matematika'];
+            $total['bing'] += $student['bing'];
+            $total['bin'] += $student['bin'];
+            $total['produktif'] += $student['produktif'];
+        }
+
+        $count = count($students);
+
+        $avg = [
+            'matematika' => round($total['matematika'] / $count, 1),
+            'bing' => round($total['bing'] / $count, 1),
+            'bin' => round($total['bin'] / $count, 1),
+            'produktif' => round($total['produktif'] / $count, 1),
+        ];
+
+        $avg['final'] = round((
+            $avg['matematika'] +
+            $avg['bing'] +
+            $avg['bin'] +
+            $avg['produktif']
+        ) / 4, 1);
+
+        return $avg;
+    }
+
     public static function find(string $id): ?array
     {
         self::init();
@@ -49,7 +98,7 @@ class Student
         }
 
 
-        // Nilai 0–100
+        // Nilai
         $scores = [
             'matematika' => 'Matematika',
             'bing' => 'Bahasa Inggris',
@@ -59,7 +108,7 @@ class Student
 
         foreach ($scores as $field => $label) {
             if (!isset($data[$field]) || $data[$field] === '') {
-                $errors[$field] = "$label wajib diisi";
+                $errors[$field] = "Nilai $label wajib diisi";
             } else if ($data[$field] < 0 || $data[$field] > 100) {
                 $errors[$field] = "Nilai $label hanya 0–100";
             }
@@ -110,13 +159,13 @@ class Student
         }
 
         unset($data['_method']);
+        // unset($_SESSION['students'][$id]);
 
         self::validate($data, $id);
 
         $data['id'] = $id;
         $_SESSION['students'][$id] = self::withAverage($data);
     }
-
 
     public static function delete(string $id): void
     {
