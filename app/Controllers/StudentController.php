@@ -6,29 +6,15 @@ class StudentController
 {
     public function index(): void
     {
-        $students = Student::all();
+        $students = Student::filter($_GET);
         $avgMapel = Student::averagePerSubject();
-        if (!empty($_GET['nis'])) {
-            $nis = $_GET['nis'];
-            $students = array_filter($students, function ($student) use ($nis) {
-                return str_contains($student['nis'], $nis);
-            });
-        }
 
-        if (!empty($_GET['sort'])) {
-            if ($_GET['sort'] === 'asc') {
-                uasort($students, fn($a, $b) => $a['nis'] <=> $b['nis']);
-            }
-            if ($_GET['sort'] === 'desc') {
-                uasort($students, fn($a, $b) => $b['nis'] <=> $a['nis']);
-            }
-        }
-        require __DIR__ . '/../Views/students/index.php';
+        require __DIR__ . '/../Views/Students/index.php';
     }
 
     public function create(): void
     {
-        require __DIR__ . '/../Views/students/create.php';
+        require __DIR__ . '/../Views/Students/create.php';
     }
 
     public function store(): void
@@ -41,7 +27,7 @@ class StudentController
         } catch (Exception $e) {
             $errors = json_decode($e->getMessage(), true);
             $old = $_POST;
-            require __DIR__ . '/../Views/students/create.php';
+            require __DIR__ . '/../Views/Students/create.php';
         }
     }
 
@@ -55,7 +41,7 @@ class StudentController
             return;
         }
 
-        require __DIR__ . '/../Views/students/edit.php';
+        require __DIR__ . '/../Views/Students/edit.php';
     }
 
     public function update(string $id): void
@@ -63,7 +49,9 @@ class StudentController
         $student = Student::find($id);
 
         if (!$student) {
-            die('Data not found');
+            http_response_code(404);
+            echo "Data not found";
+            return;
         }
 
         try {
@@ -74,7 +62,7 @@ class StudentController
         } catch (Exception $e) {
             $errors = json_decode($e->getMessage(), true);
             $student = array_merge($student, $_POST);
-            require __DIR__ . '/../Views/students/edit.php';
+            require __DIR__ . '/../Views/Students/edit.php';
         }
     }
 
