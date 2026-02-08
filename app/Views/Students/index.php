@@ -16,7 +16,7 @@
                     </a>
                 </div>
 
-                <?= require __DIR__ . '/../components/filter.php' ?>
+                <?php require __DIR__ . '/../components/filter.php' ?>
 
                 <div class="div-table">
                     <table>

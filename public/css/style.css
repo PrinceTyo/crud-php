@@ -150,11 +150,6 @@ td form button:hover {
   gap: 12px;
 }
 
-.alert-icon {
-  width: 18px;
-  height: 18px;
-}
-
 .alert-text {
   flex: 1;
   font-size: 14px;

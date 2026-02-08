@@ -1,49 +1,28 @@
 <?php
 
-class Router
+require_once __DIR__ . '/../Core/Session.php';
+
+class Student
 {
-    private static array $routes = [];
-
-    public static function add(string $method, string $path, string $controller, string $function): void
+    public static function filter(array $params): array
     {
-        self::$routes[] = [
-            'method' => $method,
-            'path' => $path,
-            'controller' => $controller,
-            'function' => $function
-        ];
-    }
+        $students = self::all();
 
-    public static function run(): void
-    {
-        $path = $_SERVER['PATH_INFO'] ?? '/';
-        $method = $_SERVER['REQUEST_METHOD'];
+        if (!empty($params['nis'])) {
+            $nis = $params['nis'];
+            $students = array_filter($students, fn($s) => str_contains($s['nis'], $nis));
+        }
 
-        foreach (self::$routes as $route) {
-            if ($method !== $route['method']) {
-                continue;
+        if (!empty($params['nis'])) {
+            if ($params['nis'] === 'asc') {
+                uasort($students, fn($a, $b) => $a['nis'] <=> $b['nis']);
             }
 
-            $pattern = preg_replace(
-                '#\{[^/]+\}#',
-                '([^/]+)',
-                $route['path']
-            );
-
-            $pattern = "#^{$pattern}$#";
-
-            if (preg_match($pattern, $path, $matches)) {
-                array_shift($matches);
-
-                $controller = new $route['controller'];
-                $function = $route['function'];
-
-                $controller->$function(...$matches);
-                return;
+            if ($params['nis'] === 'desc') {
+                uasort($students, fn($a, $b) => $b['nis'] <=> $a['nis']);
             }
         }
 
-        http_response_code(404);
-        echo "CONTROLLER NOT FOUND";
+        return $students;
     }
 }
