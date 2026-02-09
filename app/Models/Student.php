@@ -26,12 +26,12 @@ class Student
             $students = array_filter($students, fn($s) => str_contains($s['nis'], $nis));
         }
 
-        if (!empty($params['nis'])) {
-            if ($params['nis'] === 'asc') {
+        if (!empty($params['sort'])) {
+            if ($params['sort'] === 'asc') {
                 uasort($students, fn($a, $b) => $a['nis'] <=> $b['nis']);
             }
 
-            if ($params['nis'] === 'desc') {
+            if ($params['sort'] === 'desc') {
                 uasort($students, fn($a, $b) => $b['nis'] <=> $a['nis']);
             }
         }
@@ -180,8 +180,8 @@ class Student
             throw new Exception('Data tidak ditemukan');
         }
 
-        unset($data['_method']);
-        // unset($_SESSION['students'][$id]);
+        // unset($data['_method']);
+        unset($_SESSION['students'][$id]);
 
         self::validate($data, $id);
 
