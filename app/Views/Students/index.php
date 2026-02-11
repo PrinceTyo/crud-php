@@ -9,11 +9,16 @@
 
                 <div class="div-button">
                     <h1 class="text-button">Your Student</h1>
-                    <a href="/students/create">
-                        <button type="submit" class="btn">
-                            <i class="fa-solid fa-plus"></i> Add
-                        </button>
-                    </a>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="/students/create">
+                            <button type="submit" class="btn">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </a>
+                        <form action="/logout" method="POST">
+                            <button type="submit" class="btn">Logout</button>
+                        </form>
+                    </div>
                 </div>
 
                 <?php require __DIR__ . '/../components/filter.php' ?>

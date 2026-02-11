@@ -230,7 +230,6 @@ td form button:hover {
 /* INPUT */
 
 .form-container {
-  /* background-color: #065f46; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -311,4 +310,45 @@ td form button:hover {
 
 .input-error {
   border: 1px solid red !important;
+}
+
+/* Login */
+
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  width: 300px;
+  padding: 30px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px;
+  margin-bottom: 10px;
 }

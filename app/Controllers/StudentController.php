@@ -1,11 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../Models/Student.php';
+require_once __DIR__ . '/../Middlewares/AuthMiddleware.php';
 
 class StudentController
 {
     public function index(): void
     {
+        AuthMiddleware::handle();
         $students = Student::filter($_GET);
         $avgMapel = Student::averagePerSubject();
 

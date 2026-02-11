@@ -2,6 +2,11 @@
 
 require_once __DIR__ . '/../routes/Router.php';
 require_once __DIR__ . '/../app/Controllers/StudentController.php';
+require_once __DIR__ . '/../app/Controllers/AuthController.php';
+
+Router::add('GET', '/login', AuthController::class, 'index');
+Router::add('POST', '/login', AuthController::class, 'login');
+Router::add('POST', '/logout', AuthController::class, 'logout');
 
 Router::add('GET', '/students', StudentController::class, 'index');
 Router::add('GET', '/students/create', StudentController::class, 'create');
